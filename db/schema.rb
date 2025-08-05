@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_233755) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_05_014019) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -26,6 +26,26 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_233755) do
     t.index ["customer_id"], name: "index_accounts_on_customer_id"
   end
 
+  create_table "cards", force: :cascade do |t|
+    t.bigint "account_id", null: false
+    t.string "card_token", null: false
+    t.string "card_number", null: false
+    t.string "last_four_digits", null: false
+    t.string "pin_digest", null: false
+    t.string "cvc_digest", null: false
+    t.date "expiration_date", null: false
+    t.string "card_type", null: false
+    t.string "status", default: "active", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_id", "status"], name: "index_cards_on_account_id_and_status"
+    t.index ["account_id"], name: "index_cards_on_account_id"
+    t.index ["card_number"], name: "index_cards_on_card_number", unique: true
+    t.index ["card_token"], name: "index_cards_on_card_token", unique: true
+    t.index ["expiration_date"], name: "index_cards_on_expiration_date"
+    t.index ["last_four_digits"], name: "index_cards_on_last_four_digits"
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "name", limit: 250, null: false
     t.string "address", limit: 250, null: false
@@ -39,4 +59,5 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_233755) do
   end
 
   add_foreign_key "accounts", "customers"
+  add_foreign_key "cards", "accounts"
 end

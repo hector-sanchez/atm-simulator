@@ -69,3 +69,5 @@ group :development, :test do
   # Faker for generating fake data
   gem "faker"
 end
+
+gem "bcrypt", "~> 3.1"
