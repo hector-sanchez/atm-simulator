@@ -1,4 +1,6 @@
 class Customer < ApplicationRecord
+  has_many :accounts, dependent: :destroy
+
   validates :name, presence: true, length: { maximum: 250 }
   validates :address, presence: true, length: { maximum: 250 }
   validates :city, presence: true

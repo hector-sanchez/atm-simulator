@@ -10,9 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_04_200755) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_04_233755) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
+
+  create_table "accounts", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.string "account_number", null: false
+    t.decimal "balance", precision: 10, scale: 2, default: "0.0", null: false
+    t.string "account_type", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["account_number"], name: "index_accounts_on_account_number", unique: true
+    t.index ["customer_id", "account_type"], name: "index_accounts_on_customer_id_and_account_type"
+    t.index ["customer_id"], name: "index_accounts_on_customer_id"
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "name", limit: 250, null: false
@@ -25,4 +37,6 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_04_200755) do
     t.index ["state"], name: "index_customers_on_state"
     t.index ["zipcode"], name: "index_customers_on_zipcode"
   end
+
+  add_foreign_key "accounts", "customers"
 end
