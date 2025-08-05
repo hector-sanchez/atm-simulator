@@ -19,7 +19,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'when account_number is blank' do
       before { allow(account).to receive(:account_number).and_return(nil) }
-      
+
       it 'returns default masked number' do
         expect(presenter.formatted_account_number).to eq("****0000")
       end
@@ -27,7 +27,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'when account_number is empty string' do
       before { allow(account).to receive(:account_number).and_return("") }
-      
+
       it 'returns default masked number' do
         expect(presenter.formatted_account_number).to eq("****0000")
       end
@@ -41,7 +41,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'with zero balance' do
       before { account.update!(balance: 0.00) }
-      
+
       it 'returns formatted zero' do
         expect(presenter.formatted_balance).to eq("$0.00")
       end
@@ -49,7 +49,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'with large balance' do
       before { account.update!(balance: 1_234_567.89) }
-      
+
       it 'returns formatted large amount' do
         expect(presenter.formatted_balance).to eq("$1,234,567.89")
       end
@@ -63,7 +63,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'with checking account' do
       before { account.update!(account_type: "checking") }
-      
+
       it 'returns capitalized checking' do
         expect(presenter.account_type_display).to eq("Checking")
       end
@@ -77,7 +77,7 @@ RSpec.describe AccountPresenter, type: :presenter do
 
     context 'with checking account type' do
       before { account.update!(account_type: "checking") }
-      
+
       it 'returns titleized checking type' do
         expect(presenter.account_type_titleized).to eq("Checking")
       end

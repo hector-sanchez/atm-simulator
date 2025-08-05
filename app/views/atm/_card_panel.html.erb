@@ -1,0 +1,40 @@
+<!-- Right Panel - Account Info -->
+<div class="illustration-panel account-panel">
+	<div class="account-info">
+		<div class="account-card">
+			<div class="card-header">
+				<div class="card-chip"></div>
+				<div class="card-logo"><%= @card_presenter.card_type_display %></div>
+			</div>
+			<div class="card-number"><%= @card_presenter.formatted_display %></div>
+			<div class="card-details">
+				<div class="card-holder">
+					<small>CARD HOLDER</small>
+					<div><%= @card_presenter.cardholder_name %></div>
+				</div>
+				<div class="card-expiry">
+					<small>VALID THRU</small>
+					<div><%= @card_presenter.formatted_expiration %></div>
+				</div>
+			</div>
+		</div>
+
+		<div class="account-summary">
+			<h4>Account Summary</h4>
+			<div class="summary-item">
+				<span>Account Type</span>
+				<span><%= @account_presenter.account_type_titleized %></span>
+			</div>
+			<div class="summary-item">
+				<span>Available Balance</span>
+				<span><%= @account_presenter.formatted_balance %></span>
+			</div>
+			<div class="summary-item">
+				<span>Card Status</span>
+				<span class="<%= @card_presenter.status_css_class %>"
+					><%= @card_presenter.status_display %></span
+				>
+			</div>
+		</div>
+	</div>
+</div>

@@ -76,50 +76,7 @@
 			</div>
 		</div>
 
-		<!-- Right Panel - Account Info -->
-		<div class="illustration-panel account-panel">
-			<div class="account-info">
-				<div class="account-card">
-					<div class="card-header">
-						<div class="card-chip"></div>
-						<div class="card-logo">
-							<%= @card_presenter.card_type_display %>
-						</div>
-					</div>
-					<div class="card-number">
-						<%= @card_presenter.formatted_display %>
-					</div>
-					<div class="card-details">
-						<div class="card-holder">
-							<small>CARD HOLDER</small>
-							<div><%= @card_presenter.cardholder_name %></div>
-						</div>
-						<div class="card-expiry">
-							<small>VALID THRU</small>
-							<div><%= @card_presenter.formatted_expiration %></div>
-						</div>
-					</div>
-				</div>
-
-				<div class="account-summary">
-					<h4>Account Summary</h4>
-					<div class="summary-item">
-						<span>Account Type</span>
-						<span><%= @account_presenter.account_type_titleized %></span>
-					</div>
-					<div class="summary-item">
-						<span>Available Balance</span>
-						<span><%= @account_presenter.formatted_balance %></span>
-					</div>
-					<div class="summary-item">
-						<span>Card Status</span>
-						<span class="<%= @card_presenter.status_css_class %>"
-							><%= @card_presenter.status_display %></span
-						>
-					</div>
-				</div>
-			</div>
-		</div>
+		<%= render 'multi_card_panel' %>
 	</div>
 </div>
 
@@ -212,6 +169,342 @@
 	.account-info {
 		width: 100%;
 		max-width: 320px;
+	}
+
+	/* Multi-Card Container */
+	.cards-container {
+		position: relative;
+		width: 100%;
+		min-height: 200px;
+		margin-bottom: 25px;
+		perspective: 1000px;
+	}
+
+	.card-wrapper {
+		position: absolute;
+		width: 100%;
+		height: 200px;
+		cursor: pointer;
+		transition: transform 0.3s ease;
+	}
+
+	.card-wrapper:hover {
+		transform: translateX(0px) translateY(-5px) !important;
+		z-index: 1000 !important;
+	}
+
+	.card-flipper {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		transition: transform 0.6s ease;
+	}
+
+	.card-flipper.flipped {
+		transform: rotateY(180deg);
+	}
+
+	.card-front,
+	.card-back {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		backface-visibility: hidden;
+		border-radius: 16px;
+		padding: 20px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+	}
+
+	.card-front {
+		background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+		color: white;
+	}
+
+	.card-back {
+		background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+		color: white;
+		transform: rotateY(180deg);
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	/* Current card indicator */
+	.current-card-badge {
+		position: absolute;
+		top: 10px;
+		right: 10px;
+		background: rgba(0, 184, 148, 0.9);
+		color: white;
+		padding: 4px 8px;
+		border-radius: 4px;
+		font-size: 10px;
+		font-weight: bold;
+		letter-spacing: 0.5px;
+	}
+
+	/* Card back elements */
+	.magnetic-stripe {
+		width: 100%;
+		height: 35px;
+		background: linear-gradient(90deg, #2d3436 0%, #636e72 50%, #2d3436 100%);
+		margin: 15px 0;
+		border-radius: 2px;
+	}
+
+	.signature-panel {
+		background: rgba(255, 255, 255, 0.9);
+		color: #2d3436;
+		padding: 10px;
+		border-radius: 4px;
+		margin: 10px 0;
+	}
+
+	.signature-label {
+		font-size: 8px;
+		font-weight: bold;
+		margin-bottom: 5px;
+	}
+
+	.signature-line {
+		height: 20px;
+		border-bottom: 1px solid #636e72;
+		font-style: italic;
+		display: flex;
+		align-items: flex-end;
+		font-size: 12px;
+		color: #2d3436;
+	}
+
+	.card-info {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 10px;
+	}
+
+	.card-info-item {
+		text-align: center;
+		flex: 1;
+	}
+
+	.card-info-item small {
+		display: block;
+		font-size: 8px;
+		opacity: 0.8;
+		margin-bottom: 2px;
+	}
+
+	.card-info-item span {
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.card-network-logo {
+		text-align: right;
+		font-weight: bold;
+		font-size: 12px;
+		opacity: 0.8;
+	}
+
+	.cvc-display {
+		font-family: monospace;
+		letter-spacing: 1px;
+	}
+
+	.cards-instruction {
+		text-align: center;
+		color: rgba(255, 255, 255, 0.8);
+		margin-top: 15px;
+	}
+
+	.cards-instruction small {
+		font-size: 12px;
+	}
+
+	.card-count-indicator {
+		margin-top: 8px;
+		padding: 4px 8px;
+		background: rgba(255, 255, 255, 0.1);
+		border-radius: 12px;
+		backdrop-filter: blur(10px);
+		display: inline-block;
+	}
+
+	.card-count-indicator small {
+		font-size: 10px;
+		font-weight: 600;
+		letter-spacing: 0.5px;
+	}	/* Vertical Cards Display */
+	.vertical-cards-container {
+		display: flex;
+		flex-direction: column;
+		gap: 20px;
+		width: 100%;
+		margin-bottom: 20px;
+	}
+
+	.vertical-card {
+		position: relative;
+		width: 95%;
+		height: 180px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		perspective: 1000px;
+		margin: 0 auto;
+	}
+
+	/* Shadow card behind each card */
+	.vertical-card::before {
+		content: '';
+		position: absolute;
+		top: 4px;
+		left: 4px;
+		right: -4px;
+		bottom: -4px;
+		background: rgba(0, 0, 0, 0.1);
+		border-radius: 16px;
+		z-index: -1;
+		transition: all 0.3s ease;
+	}
+
+	.vertical-card:hover {
+		transform: translateY(-3px) scale(1.01);
+		filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
+	}
+
+	.vertical-card:hover::before {
+		transform: translateY(2px);
+		background: rgba(0, 0, 0, 0.15);
+	}
+
+	.vertical-card:active {
+		transform: translateY(-1px) scale(0.99);
+		transition: all 0.1s ease;
+	}
+
+	.card-flipper {
+		position: relative;
+		width: 100%;
+		height: 100%;
+		transform-style: preserve-3d;
+		transition: transform 0.6s ease;
+	}
+
+	.card-flipper.flipped {
+		transform: rotateY(180deg);
+	}
+
+	.card-front,
+	.card-back {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		backface-visibility: hidden;
+		border-radius: 16px;
+		overflow: hidden;
+	}
+
+	.card-back {
+		transform: rotateY(180deg);
+		background: linear-gradient(135deg, #636e72 0%, #2d3436 100%);
+		color: white;
+		padding: 15px;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+	}
+
+	.magnetic-stripe {
+		width: 100%;
+		height: 35px;
+		background: linear-gradient(90deg, #2d3436 0%, #636e72 50%, #2d3436 100%);
+		margin: 10px 0;
+		border-radius: 2px;
+		box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+	}
+
+	.signature-panel {
+		background: rgba(255, 255, 255, 0.95);
+		color: #2d3436;
+		padding: 8px;
+		border-radius: 4px;
+		margin: 10px 0;
+	}
+
+	.signature-label {
+		font-size: 8px;
+		font-weight: bold;
+		margin-bottom: 5px;
+		letter-spacing: 0.5px;
+	}
+
+	.signature-line {
+		height: 18px;
+		border-bottom: 1px solid #636e72;
+		font-style: italic;
+		font-size: 11px;
+		display: flex;
+		align-items: flex-end;
+	}
+
+	.card-info {
+		display: flex;
+		justify-content: space-between;
+		margin-top: 15px;
+		gap: 10px;
+	}
+
+	.card-info-item {
+		text-align: center;
+		flex: 1;
+	}
+
+	.card-info-item small {
+		display: block;
+		font-size: 8px;
+		opacity: 0.8;
+		margin-bottom: 2px;
+		font-weight: bold;
+		letter-spacing: 0.5px;
+	}
+
+	.card-info-item span {
+		font-size: 11px;
+		font-weight: 600;
+	}
+
+	.card-network-logo {
+		text-align: right;
+		font-weight: bold;
+		font-size: 12px;
+		opacity: 0.9;
+		margin-top: 10px;
+		letter-spacing: 1px;
+	}
+
+	.cvc-display {
+		font-family: monospace;
+		letter-spacing: 2px;
+		background: rgba(255, 255, 255, 0.1);
+		padding: 2px 6px;
+		border-radius: 3px;
+	}
+
+	.current-card-badge {
+		position: absolute;
+		top: 15px;
+		right: 15px;
+		background: linear-gradient(45deg, #00b894, #00a085);
+		color: white;
+		padding: 4px 10px;
+		border-radius: 12px;
+		font-size: 9px;
+		font-weight: bold;
+		letter-spacing: 0.5px;
+		text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+		box-shadow: 0 2px 8px rgba(0, 184, 148, 0.3);
+		z-index: 10;
 	}
 
 	.account-card {

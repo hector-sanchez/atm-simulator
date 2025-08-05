@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_014019) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_05_200633) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -38,6 +38,7 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_014019) do
     t.string "status", default: "active", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "cardholder_name"
     t.index ["account_id", "status"], name: "index_cards_on_account_id_and_status"
     t.index ["account_id"], name: "index_cards_on_account_id"
     t.index ["card_number"], name: "index_cards_on_card_number", unique: true

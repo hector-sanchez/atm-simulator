@@ -16,6 +16,7 @@ class Card < ApplicationRecord
   # Validations
   validates :card_token, presence: true, uniqueness: true
   validates :card_number, presence: true, uniqueness: true
+  validates :cardholder_name, presence: true, length: { maximum: 250 }, allow_blank: false
   validates :last_four_digits, presence: true, length: { is: 4 },
             format: { with: /\A\d{4}\z/, message: "must be 4 digits" }
   validates :pin_digest, presence: true

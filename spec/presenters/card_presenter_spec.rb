@@ -22,19 +22,19 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'when last_four_digits is not available' do
       before { allow(card).to receive(:respond_to?).with(:last_four_digits).and_return(false) }
-      
+
       it 'falls back to extracting from card_number' do
         expect(presenter.formatted_display).to eq("****0366")
       end
     end
 
     context 'when card_number is blank' do
-      before do 
+      before do
         allow(card).to receive(:respond_to?).and_return(true)  # Default response
         allow(card).to receive(:respond_to?).with(:last_four_digits).and_return(false)
         allow(card).to receive(:card_number).and_return(nil)
       end
-      
+
       it 'returns default masked number' do
         expect(presenter.formatted_display).to eq("****0000")
       end
@@ -54,7 +54,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with mastercard' do
       before { card.update!(card_type: "mastercard") }
-      
+
       it 'returns uppercase mastercard' do
         expect(presenter.card_type_display).to eq("MASTERCARD")
       end
@@ -68,7 +68,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with blocked status' do
       before { card.update!(status: "blocked") }
-      
+
       it 'returns titleized blocked status' do
         expect(presenter.status_display).to eq("Blocked")
       end
@@ -82,7 +82,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with blocked status' do
       before { card.update!(status: "blocked") }
-      
+
       it 'returns status-blocked' do
         expect(presenter.status_css_class).to eq("status-blocked")
       end
@@ -90,7 +90,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with suspended status' do
       before { card.update!(status: "suspended") }
-      
+
       it 'returns status-blocked' do
         expect(presenter.status_css_class).to eq("status-blocked")
       end
@@ -98,7 +98,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with expired status' do
       before { card.update!(status: "expired") }
-      
+
       it 'returns status-expired' do
         expect(presenter.status_css_class).to eq("status-expired")
       end
@@ -106,7 +106,7 @@ RSpec.describe CardPresenter, type: :presenter do
 
     context 'with unknown status' do
       before { allow(card).to receive(:status).and_return("pending") }
-      
+
       it 'returns status-unknown' do
         expect(presenter.status_css_class).to eq("status-unknown")
       end
@@ -114,19 +114,19 @@ RSpec.describe CardPresenter, type: :presenter do
   end
 
   describe '#cardholder_name' do
-    it 'returns uppercase customer name' do
-      expect(presenter.cardholder_name).to eq("JOHN DOE SMITH")
+    it 'returns uppercase cardholder name from card' do
+      expect(presenter.cardholder_name).to eq("JOHN DOE")
     end
   end
 
   describe '#customer_first_name' do
-    it 'returns first name from customer name' do
+    it 'returns first name from cardholder name' do
       expect(presenter.customer_first_name).to eq("John")
     end
 
-    context 'with single name' do
-      before { customer.update!(name: "Madonna") }
-      
+    context 'with single cardholder name' do
+      before { card.update!(cardholder_name: "Madonna") }
+
       it 'returns the single name' do
         expect(presenter.customer_first_name).to eq("Madonna")
       end

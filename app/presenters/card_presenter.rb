@@ -4,7 +4,12 @@ class CardPresenter
   end
 
   # Delegate basic attributes to the card
-  delegate :account, :customer, :card_type, :status, :expiration_date, to: :@card
+  delegate :account, :customer, :card_type, :status, :expiration_date, :created_at, to: :@card
+
+  # Access to the underlying card object
+  def card
+    @card
+  end
 
   # Presentation methods that were in the model/view
   def formatted_display
@@ -42,11 +47,12 @@ class CardPresenter
 
   # Customer-related presentation methods
   def cardholder_name
-    customer.name.upcase
+    @card.cardholder_name&.upcase || customer.name.upcase
   end
 
   def customer_first_name
-    customer.name.split.first
+    cardholder_first_name = @card.cardholder_name&.split&.first
+    cardholder_first_name || customer.name.split.first
   end
 
   def customer

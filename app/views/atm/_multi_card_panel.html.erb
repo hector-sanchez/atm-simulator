@@ -1,0 +1,88 @@
+<!-- Multi-Card Panel with Vertical Card Layout -->
+<div class="illustration-panel account-panel">
+	<div class="account-info">
+		<!-- Vertical Cards Display -->
+		<div class="vertical-cards-container">
+			<% @card_presenters.each_with_index do |card_presenter, index| %>
+			<div
+				class="vertical-card"
+				data-controller="card-flip"
+				data-action="click->card-flip#toggle"
+				data-card-index="<%= index %>"
+			>
+				<div
+					class="card-flipper"
+					data-card-flip-target="flipper"
+				>
+					<!-- Front of Card -->
+					<div class="account-card card-front">
+						<div class="card-header">
+							<div class="card-chip"></div>
+							<div class="card-logo">
+								<%= card_presenter.card_type_display %>
+							</div>
+						</div>
+						<div class="card-number">
+							<%= card_presenter.formatted_display %>
+						</div>
+						<div class="card-details">
+							<div class="card-holder">
+								<small>CARD HOLDER</small>
+								<div><%= card_presenter.cardholder_name %></div>
+							</div>
+							<div class="card-expiry">
+								<small>VALID THRU</small>
+								<div><%= card_presenter.formatted_expiration %></div>
+							</div>
+						</div>
+
+						<!-- Main card indicator -->
+						<% if card_presenter.card == @current_card %>
+						<div class="current-card-badge">MAIN</div>
+						<% end %>
+					</div>
+
+					<!-- Back of Card -->
+					<div class="account-card card-back">
+						<div class="magnetic-stripe"></div>
+						<div class="signature-panel">
+							<div class="signature-label">AUTHORIZED SIGNATURE</div>
+							<div class="signature-line"></div>
+						</div>
+						<div class="card-info">
+							<div class="card-info-item">
+								<small>CARD STATUS</small>
+								<span class="<%= card_presenter.status_css_class %>">
+									<%= card_presenter.status_display %>
+								</span>
+							</div>
+							<div class="card-info-item">
+								<small>ISSUED</small>
+								<span
+									><%= card_presenter.card.created_at.strftime("%m/%y") %></span
+								>
+							</div>
+							<div class="card-info-item">
+								<small>CVC</small>
+								<span class="cvc-display">***</span>
+							</div>
+						</div>
+						<div class="card-network-logo">
+							<%= card_presenter.card_type_display %>
+						</div>
+					</div>
+				</div>
+			</div>
+			<% end %>
+		</div>
+
+		<div class="cards-instruction">
+			<small>💡 Click any card to flip and see details</small>
+			<% if @card_presenters.length > 1 %>
+			<div class="card-count-indicator">
+				<small><%= @card_presenters.length %> cards available</small>
+			</div>
+			<% end %>
+		</div>
+	</div>
+</div>

@@ -28,22 +28,54 @@ account = Account.create!(
   balance: 2500.00
 )
 
-puts "Created account: #{account.formatted_account_number} with balance: $#{account.balance}"
+puts "Created account: #{account.account_number} with balance: $#{account.balance}"
 
-# Create a test card with PIN 1234
-card = Card.new(
+# Create multiple test cards for the same account with different cardholders
+# All cards use the same network (Visa) as they're from the same bank/account
+
+card1 = Card.new(
   account: account,
   card_number: "4532015112830366",
+  cardholder_name: "John Doe",
   card_type: "visa",
   expiration_date: 2.years.from_now,
   status: "active",
   pin: "1234",
   cvc: "123"
 )
+card1.save!
 
-card.save!
+card2 = Card.new(
+  account: account,
+  card_number: "4532015112830374",
+  cardholder_name: "Jane Doe",
+  card_type: "visa",
+  expiration_date: 18.months.from_now,
+  status: "active",
+  pin: "1234",
+  cvc: "456"
+)
+card2.save!
 
-puts "Created card: #{card.formatted_display} with PIN: 1234"
-puts "Test login credentials:"
+card3 = Card.new(
+  account: account,
+  card_number: "4532015112830382",
+  cardholder_name: "John Doe Jr",
+  card_type: "visa",
+  expiration_date: 3.years.from_now,
+  status: "active",
+  pin: "1234",
+  cvc: "789"
+)
+card3.save!
+
+puts "Created ATM cards for the same account:"
+puts "1. #{card1.card_number} - #{card1.cardholder_name} (Primary account holder)"
+puts "2. #{card2.card_number} - #{card2.cardholder_name} (Spouse)"
+puts "3. #{card3.card_number} - #{card3.cardholder_name} (Authorized user)"
+puts ""
+puts "All cards are Visa debit cards from the same bank for the same checking account"
+puts ""
+puts "Test login credentials (any card works):"
 puts "Card Number: 4532015112830366"
 puts "PIN: 1234"

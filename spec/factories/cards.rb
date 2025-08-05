@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :card do
     account
     card_number { '4532015112830366' } # Use a consistent valid card number
+    cardholder_name { 'John Doe' }
     pin { '1234' }
     cvc { '123' }
     expiration_date { 2.years.from_now.to_date }
