@@ -60,10 +60,6 @@ class Card < ApplicationRecord
     active? && !expired?
   end
 
-  def formatted_display
-    "****#{last_four_digits}"
-  end
-
   def authenticate_pin(pin_attempt)
     BCrypt::Password.new(pin_digest) == pin_attempt
   end

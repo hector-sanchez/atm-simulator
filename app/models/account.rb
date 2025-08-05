@@ -8,11 +8,6 @@ class Account < ApplicationRecord
   validates :balance, presence: true, numericality: { greater_than_or_equal_to: 0 }
   validates :account_type, presence: true, inclusion: { in: ACCOUNT_TYPES }
 
-  # Format account number display
-  def formatted_account_number
-    "****#{account_number.last(4)}"
-  end
-
   # Check if account has sufficient funds
   def sufficient_funds?(amount)
     balance >= amount

@@ -1,0 +1,85 @@
+<div class="atm-container">
+	<div class="atm-screen">
+		<!-- Left Panel - Form -->
+		<div class="form-panel">
+			<!-- Header -->
+			<div class="atm-header">
+				<div class="bank-logo">SecureBank</div>
+			</div>
+
+			<!-- Error Messages -->
+			<% if @error_message %>
+			<div
+				class="error-message"
+				data-turbo-temporary
+			>
+				<%= @error_message %>
+			</div>
+			<% end %>
+
+			<!-- Flash Messages -->
+			<% if notice %>
+			<div
+				class="success-message"
+				data-turbo-temporary
+			>
+				<%= notice %>
+			</div>
+			<% end %> <% if alert %>
+			<div
+				class="error-message"
+				data-turbo-temporary
+			>
+				<%= alert %>
+			</div>
+			<% end %>
+
+			<!-- Login Form -->
+			<%= form_with url: login_path, method: :post, local: true, class:
+			"login-form" do |form| %>
+
+			<!-- Card Number Input -->
+			<div class="form-group">
+				<%= form.label :card_number, "Card Number :", class: "form-label" %> <%=
+				form.text_field :card_number, value: @card_number, placeholder: "4532
+				0151 1283 0366", maxlength: "19", class: "form-input card-number-input",
+				autocomplete: "off" %>
+			</div>
+
+			<!-- PIN Input -->
+			<div class="form-group">
+				<%= form.label :pin, "PIN Code :", class: "form-label" %> <%=
+				form.password_field :pin, placeholder: "••••", maxlength: "4", class:
+				"form-input pin-input", autocomplete: "off" %>
+			</div>
+
+			<!-- Submit Button -->
+			<%= form.submit "Authenticate", class: "atm-button" %> <% end %>
+
+			<!-- Footer Text -->
+			<div class="footer-text">
+				<strong>Secure ATM Access</strong><br />
+				Your card information is encrypted and protected.<br />
+				This session will automatically timeout for security.
+			</div>
+		</div>
+
+		<!-- Right Panel - Illustration -->
+		<div class="illustration-panel">
+			<div class="bank-illustration">
+				<div class="bank-building">
+					<div class="dollar-sign">$</div>
+					<div class="bank-roof"></div>
+					<div class="bank-columns">
+						<div class="column"></div>
+						<div class="column"></div>
+						<div class="column"></div>
+						<div class="column"></div>
+						<div class="column"></div>
+					</div>
+					<div class="bank-base"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

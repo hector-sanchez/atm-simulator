@@ -195,13 +195,6 @@ RSpec.describe Card, type: :model do
       end
     end
 
-    describe '#formatted_display' do
-      it 'shows masked card number' do
-        card = create(:card, card_number: '4532015112830366')
-        expect(card.formatted_display).to eq('****0366')
-      end
-    end
-
     describe '#authenticate_pin' do
       it 'returns true for correct PIN' do
         card = create(:card, pin: '1234')

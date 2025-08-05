@@ -65,13 +65,6 @@ RSpec.describe Account, type: :model do
     end
   end
 
-  describe '#formatted_account_number' do
-    it 'shows only last 4 digits' do
-      account = create(:account, account_number: '1234567890')
-      expect(account.formatted_account_number).to eq('****7890')
-    end
-  end
-
   describe '#sufficient_funds?' do
     let(:account) { create(:account, balance: 100.00) }
 

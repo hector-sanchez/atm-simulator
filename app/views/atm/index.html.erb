@@ -1,0 +1,355 @@
+<div class="atm-container">
+	<div class="atm-screen">
+		<!-- Left Panel - Menu -->
+		<div class="form-panel">
+			<!-- Header -->
+			<div class="atm-header">
+				<div class="bank-logo">SecureBank ATM</div>
+				<h1 class="welcome-title">
+					Welcome, <%= @card_presenter.customer_first_name %>
+				</h1>
+				<p class="welcome-subtitle">
+					<strong><%= @account_presenter.account_type_display %></strong>
+					Account: <%= @account_presenter.formatted_account_number %> • Balance:
+					<%= @account_presenter.formatted_balance %>
+				</p>
+			</div>
+
+			<!-- ATM Menu Options -->
+			<div class="atm-menu">
+				<div class="menu-section">
+					<h3 class="menu-title">Select Transaction</h3>
+
+					<div class="menu-options">
+						<button
+							class="menu-option"
+							type="button"
+						>
+							<span class="option-icon">💰</span>
+							<span class="option-text">
+								<strong>Check Balance</strong>
+								<small
+									>View current account balance and recent transactions</small
+								>
+							</span>
+						</button>
+
+						<button
+							class="menu-option"
+							type="button"
+						>
+							<span class="option-icon">💳</span>
+							<span class="option-text">
+								<strong>Withdraw Cash</strong>
+								<small>Take money from your account</small>
+							</span>
+						</button>
+
+						<button
+							class="menu-option"
+							type="button"
+						>
+							<span class="option-icon">💵</span>
+							<span class="option-text">
+								<strong>Make a deposit</strong>
+								<small>Put money in your account</small>
+							</span>
+						</button>
+
+						<button
+							class="menu-option"
+							type="button"
+						>
+							<span class="option-icon">📄</span>
+							<span class="option-text">
+								<strong>Mini Statement</strong>
+								<small>View recent transactions</small>
+							</span>
+						</button>
+					</div>
+				</div>
+
+				<!-- Logout Button -->
+				<%= link_to logout_path, method: :delete, class: "logout-button", data:
+				{ confirm: "Are you sure you want to end your session?" } do %>
+				<span>🚪</span> End Session <% end %>
+			</div>
+		</div>
+
+		<!-- Right Panel - Account Info -->
+		<div class="illustration-panel account-panel">
+			<div class="account-info">
+				<div class="account-card">
+					<div class="card-header">
+						<div class="card-chip"></div>
+						<div class="card-logo">
+							<%= @card_presenter.card_type_display %>
+						</div>
+					</div>
+					<div class="card-number">
+						<%= @card_presenter.formatted_display %>
+					</div>
+					<div class="card-details">
+						<div class="card-holder">
+							<small>CARD HOLDER</small>
+							<div><%= @card_presenter.cardholder_name %></div>
+						</div>
+						<div class="card-expiry">
+							<small>VALID THRU</small>
+							<div><%= @card_presenter.formatted_expiration %></div>
+						</div>
+					</div>
+				</div>
+
+				<div class="account-summary">
+					<h4>Account Summary</h4>
+					<div class="summary-item">
+						<span>Account Type</span>
+						<span><%= @account_presenter.account_type_titleized %></span>
+					</div>
+					<div class="summary-item">
+						<span>Available Balance</span>
+						<span><%= @account_presenter.formatted_balance %></span>
+					</div>
+					<div class="summary-item">
+						<span>Card Status</span>
+						<span class="<%= @card_presenter.status_css_class %>"
+							><%= @card_presenter.status_display %></span
+						>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<style>
+	.atm-menu {
+		margin-top: 15px;
+	}
+
+	.menu-title {
+		font-size: 18px;
+		font-weight: 600;
+		color: #2d3436;
+		margin-bottom: 15px;
+	}
+
+	.menu-options {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		margin-bottom: 25px;
+	}
+
+	.menu-option {
+		display: flex;
+		align-items: center;
+		gap: 14px;
+		padding: 16px;
+		background: #f8f9fa;
+		border: 2px solid #e9ecef;
+		border-radius: 12px;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		text-align: left;
+		width: 100%;
+	}
+
+	.menu-option:hover {
+		background: #ffffff;
+		border-color: #74b9ff;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(116, 185, 255, 0.15);
+	}
+
+	.option-icon {
+		font-size: 20px;
+		width: 35px;
+		text-align: center;
+	}
+
+	.option-text strong {
+		display: block;
+		font-size: 15px;
+		font-weight: 600;
+		color: #2d3436;
+		margin-bottom: 3px;
+	}
+
+	.option-text small {
+		font-size: 13px;
+		color: #636e72;
+	}
+
+	.logout-button {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		padding: 14px;
+		background: #ff7675;
+		color: white;
+		border-radius: 12px;
+		text-decoration: none;
+		font-weight: 600;
+		transition: all 0.3s ease;
+	}
+
+	.logout-button:hover {
+		background: #e17055;
+		transform: translateY(-2px);
+		box-shadow: 0 8px 25px rgba(255, 118, 117, 0.3);
+		color: white;
+		text-decoration: none;
+	}
+
+	.account-panel {
+		background: linear-gradient(135deg, #2d3436 0%, #636e72 100%);
+		padding: 30px;
+	}
+
+	.account-info {
+		width: 100%;
+		max-width: 320px;
+	}
+
+	.account-card {
+		background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+		border-radius: 16px;
+		padding: 25px;
+		color: white;
+		margin-bottom: 25px;
+		box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+	}
+
+	.card-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		margin-bottom: 25px;
+	}
+
+	.card-chip {
+		width: 35px;
+		height: 25px;
+		background: #fdcb6e;
+		border-radius: 6px;
+		position: relative;
+	}
+
+	.card-chip::before {
+		content: "";
+		position: absolute;
+		top: 5px;
+		left: 5px;
+		right: 5px;
+		bottom: 5px;
+		background: linear-gradient(45deg, #fdcb6e, #e17055);
+		border-radius: 2px;
+	}
+
+	.card-logo {
+		font-size: 16px;
+		font-weight: bold;
+		letter-spacing: 2px;
+	}
+
+	.card-number {
+		font-size: 20px;
+		font-weight: 600;
+		letter-spacing: 3px;
+		margin-bottom: 18px;
+		font-family: "Courier New", monospace;
+	}
+
+	.card-details {
+		display: flex;
+		justify-content: space-between;
+	}
+
+	.card-details small {
+		display: block;
+		font-size: 9px;
+		margin-bottom: 3px;
+		opacity: 0.8;
+	}
+
+	.account-summary {
+		background: rgba(255, 255, 255, 0.1);
+		backdrop-filter: blur(10px);
+		border-radius: 16px;
+		padding: 20px;
+		color: white;
+	}
+
+	.account-summary h4 {
+		margin-bottom: 15px;
+		font-size: 16px;
+	}
+
+	.summary-item {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 10px 0;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+
+	.summary-item:last-child {
+		border-bottom: none;
+	}
+
+	.status-active {
+		color: #00b894;
+		font-weight: 600;
+	}
+
+	.status-blocked,
+	.status-expired {
+		color: #ff7675;
+		font-weight: 600;
+	}
+
+	.status-unknown {
+		color: #fdcb6e;
+		font-weight: 600;
+	}
+
+	@media (max-width: 1024px) {
+		.account-info {
+			max-width: 280px;
+		}
+
+		.account-card {
+			padding: 20px;
+		}
+
+		.card-number {
+			font-size: 18px;
+		}
+	}
+
+	@media (max-width: 768px) {
+		.account-panel {
+			display: none;
+		}
+
+		.menu-option {
+			padding: 14px;
+		}
+
+		.option-icon {
+			font-size: 18px;
+			width: 30px;
+		}
+
+		.option-text strong {
+			font-size: 14px;
+		}
+
+		.option-text small {
+			font-size: 12px;
+		}
+	}
+</style>
