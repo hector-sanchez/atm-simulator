@@ -36,7 +36,10 @@ class SessionsController < ApplicationController
   def destroy
     session.delete(:card_id)
     session.delete(:account_id)
-    redirect_to login_path, notice: "You have been logged out successfully."
+    session.delete(:atm_machine_id)
+    session.delete(:user_location)
+    session.delete(:selection_reason)
+    redirect_to root_path, notice: "You have been logged out successfully."
   end
 
   private

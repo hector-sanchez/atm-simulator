@@ -1,6 +1,7 @@
 class AtmController < ApplicationController
   layout 'atm'
   before_action :require_authentication
+  before_action :assign_atm_location, only: [:index]
 
   def index
     @current_card = Card.includes(account: :customer).find(session[:card_id])
@@ -22,5 +23,20 @@ class AtmController < ApplicationController
     unless session[:card_id]
       redirect_to login_path, alert: "Please authenticate your card to continue."
     end
+  end
+
+  def assign_atm_location
+    # Only assign ATM once per session
+    unless session[:atm_machine_id]
+      location_data = SessionLocationService.assign_atm_for_session
+
+      session[:atm_machine_id] = location_data[:atm_machine].id
+      session[:user_location] = location_data[:user_location]
+      session[:selection_reason] = location_data[:selection_reason]
+    end
+
+    @current_atm = AtmMachine.find(session[:atm_machine_id])
+    @user_location = session[:user_location]
+    @selection_reason = session[:selection_reason]
   end
 end

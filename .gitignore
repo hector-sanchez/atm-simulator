@@ -28,3 +28,5 @@
 
 # Ignore .keep files
 *.keep
+# Add public/assets/ to .gitignore if not already there
+/public/assets/
