@@ -42,6 +42,18 @@ class AtmMachine < ApplicationRecord
   scope :with_cash, -> { where('cash_available > 0') }
   scope :by_state, ->(state) { where(state: state) }
   scope :by_city, ->(city) { where(city: city) }
+  scope :active_with_cash_at_branch, -> { joins(:branch).active.with_cash }
+  scope :active_with_cash_at_market_or_grocery, -> { active.with_cash.where(location_type: 'supermarket') }
+  scope :active_with_cash_at_university, -> { active.with_cash.where(location_type: 'university') }
+  scope :active_with_cash_at_airport, -> { active.with_cash.where(location_type: 'airport') }
+  scope :active_with_cash_near_city, ->(city) {
+    joins("LEFT JOIN branches ON atm_machines.branch_id = branches.id")
+                           .where(
+                             "(atm_machines.city = ? OR branches.city = ?) AND atm_machines.status = ?",
+                             city, city, 'active'
+                           )
+                           .where('atm_machines.cash_available > 0')
+  }
 
   # Instance methods
   def full_address

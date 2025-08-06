@@ -1,4 +1,4 @@
-class SessionLocationService
+class AtmLocator
   # Simulated user locations - in real app this could come from IP geolocation, GPS, etc.
   USER_LOCATIONS = [
     { name: "Downtown Area", city: "Anytown", state: "CA", zipcode: "12345" },
@@ -8,21 +8,16 @@ class SessionLocationService
     { name: "Airport Terminal", city: "Anytown", state: "CA", zipcode: "12349" }
   ].freeze
 
-  def self.assign_atm_for_session
+  def self.find_nearest_atm
     # Step 1: Simulate user's current location
     user_location = USER_LOCATIONS.sample
 
     # Step 2: Find operational ATMs near that location (same city for simplicity)
-    nearby_atms = AtmMachine.joins("LEFT JOIN branches ON atm_machines.branch_id = branches.id")
-                           .where(
-                             "(atm_machines.city = ? OR branches.city = ?) AND atm_machines.status = ?",
-                             user_location[:city], user_location[:city], 'active'
-                           )
-                           .where('atm_machines.cash_available > 0')
+    nearby_atms = AtmMachine.active_with_cash_near_city(user_location[:city])
 
     # Step 3: If no nearby operational ATMs, fall back to any operational ATM
     if nearby_atms.empty?
-      nearby_atms = AtmMachine.where(status: 'active').where('cash_available > 0')
+      nearby_atms = AtmMachine.active.with_cash
     end
 
     # Step 4: Randomly select from available ATMs
@@ -35,18 +30,18 @@ class SessionLocationService
     }
   end
 
-  def self.assign_specific_atm_by_location(location_preference)
+  def self.find_atm_by_location_type(location_preference)
     case location_preference.downcase
     when 'branch'
-      AtmMachine.joins(:branch).where(status: 'active').where('cash_available > 0').sample
+      AtmMachine.active_with_cash_at_branch.sample
     when 'supermarket', 'grocery'
-      AtmMachine.where(location_type: 'supermarket', status: 'active').where('cash_available > 0').sample
+      AtmMachine.active_with_cash_at_market_or_grocery.sample
     when 'university', 'school'
-      AtmMachine.where(location_type: 'university', status: 'active').where('cash_available > 0').sample
+      AtmMachine.active_with_cash_at_university.sample
     when 'airport'
-      AtmMachine.where(location_type: 'airport', status: 'active').where('cash_available > 0').sample
+      AtmMachine.active_with_cash_at_airport.sample
     else
-      assign_atm_for_session[:atm_machine]
+      find_nearest_atm[:atm_machine]
     end
   end
 

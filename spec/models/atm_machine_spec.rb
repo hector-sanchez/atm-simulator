@@ -94,39 +94,158 @@ RSpec.describe AtmMachine, type: :model do
   end
 
   describe 'scopes' do
-    let!(:active_atm) { create(:atm_machine, status: 'active', cash_available: 1000) }
-    let!(:maintenance_atm) { create(:atm_machine, status: 'maintenance') }
-    let!(:no_cash_atm) { create(:atm_machine, status: 'active', cash_available: 0) }
-    let!(:supermarket_atm) { create(:atm_machine, location_type: 'supermarket') }
+    let!(:branch) { create(:branch, city: 'Boston', state: 'MA') }
+    let!(:active_atm) { create(:atm_machine, branch: nil, location_type: 'standalone', status: 'active', cash_available: 1000) }
+    let!(:maintenance_atm) { create(:atm_machine, branch: nil, location_type: 'standalone', status: 'maintenance') }
+    let!(:no_cash_atm) { create(:atm_machine, branch: nil, location_type: 'standalone', status: 'active', cash_available: 0) }
+    let!(:supermarket_atm) { create(:atm_machine, branch: nil, location_type: 'supermarket') }
+    let!(:branch_atm) { create(:atm_machine, branch: branch, status: 'active', cash_available: 5000, city: 'Boston', state: 'MA') }
+    let!(:university_atm) { create(:atm_machine, branch: nil, location_type: 'university', status: 'active', cash_available: 3000) }
+    let!(:airport_atm) { create(:atm_machine, branch: nil, location_type: 'airport', status: 'active', cash_available: 8000) }
+    let!(:maintenance_branch_atm) { create(:atm_machine, branch: branch, status: 'maintenance', cash_available: 2000) }
+    let!(:no_cash_supermarket_atm) { create(:atm_machine, branch: nil, location_type: 'supermarket', status: 'active', cash_available: 0) }
 
     describe '.active' do
       it 'returns only active ATMs' do
         results = AtmMachine.active
-        expect(results).to include(active_atm, no_cash_atm)
-        expect(results).not_to include(maintenance_atm)
+        expect(results).to include(active_atm, no_cash_atm, branch_atm, university_atm, airport_atm, no_cash_supermarket_atm)
+        expect(results).not_to include(maintenance_atm, maintenance_branch_atm)
       end
     end
 
     describe '.out_of_service' do
       it 'returns ATMs that are out of service' do
         results = AtmMachine.out_of_service
-        expect(results).to include(maintenance_atm)
-        expect(results).not_to include(active_atm, no_cash_atm)
+        expect(results).to include(maintenance_atm, maintenance_branch_atm)
+        expect(results).not_to include(active_atm, no_cash_atm, branch_atm)
       end
     end
 
     describe '.with_cash' do
       it 'returns ATMs with available cash' do
         results = AtmMachine.with_cash
-        expect(results).to include(active_atm)
-        expect(results).not_to include(no_cash_atm)
+        expect(results).to include(active_atm, branch_atm, university_atm, airport_atm)
+        expect(results).not_to include(no_cash_atm, no_cash_supermarket_atm)
       end
     end
 
     describe '.by_location_type' do
       it 'returns ATMs of the specified location type' do
         results = AtmMachine.by_location_type('supermarket')
-        expect(results).to include(supermarket_atm)
+        expect(results).to include(supermarket_atm, no_cash_supermarket_atm)
+        expect(results).not_to include(university_atm, airport_atm)
+      end
+    end
+
+    describe '.by_state' do
+      it 'returns ATMs in the specified state' do
+        results = AtmMachine.by_state('MA')
+        expect(results).to include(branch_atm)
+      end
+    end
+
+    describe '.by_city' do
+      it 'returns ATMs in the specified city' do
+        results = AtmMachine.by_city('Boston')
+        expect(results).to include(branch_atm)
+      end
+    end
+
+    describe '.active_with_cash_at_branch' do
+      it 'returns only active branch ATMs with cash' do
+        results = AtmMachine.active_with_cash_at_branch
+        expect(results).to include(branch_atm)
+        expect(results).not_to include(maintenance_branch_atm, university_atm, airport_atm, supermarket_atm)
+      end
+    end
+
+    describe '.active_with_cash_at_market_or_grocery' do
+      it 'returns only active supermarket ATMs with cash' do
+        # Create a supermarket ATM with cash for this test
+        cash_supermarket_atm = create(:atm_machine, branch: nil, location_type: 'supermarket', status: 'active', cash_available: 2000)
+        
+        results = AtmMachine.active_with_cash_at_market_or_grocery
+        expect(results).to include(cash_supermarket_atm)
+        expect(results).not_to include(no_cash_supermarket_atm, university_atm, branch_atm)
+      end
+    end
+
+    describe '.active_with_cash_at_university' do
+      it 'returns only active university ATMs with cash' do
+        results = AtmMachine.active_with_cash_at_university
+        expect(results).to include(university_atm)
+        expect(results).not_to include(branch_atm, airport_atm, supermarket_atm)
+      end
+
+      it 'excludes university ATMs without cash' do
+        no_cash_university_atm = create(:atm_machine, branch: nil, location_type: 'university', status: 'active', cash_available: 0)
+        
+        results = AtmMachine.active_with_cash_at_university
+        expect(results).to include(university_atm)
+        expect(results).not_to include(no_cash_university_atm)
+      end
+
+      it 'excludes non-active university ATMs' do
+        maintenance_university_atm = create(:atm_machine, branch: nil, location_type: 'university', status: 'maintenance', cash_available: 5000)
+        
+        results = AtmMachine.active_with_cash_at_university
+        expect(results).to include(university_atm)
+        expect(results).not_to include(maintenance_university_atm)
+      end
+    end
+
+    describe '.active_with_cash_at_airport' do
+      it 'returns only active airport ATMs with cash' do
+        results = AtmMachine.active_with_cash_at_airport
+        expect(results).to include(airport_atm)
+        expect(results).not_to include(branch_atm, university_atm, supermarket_atm)
+      end
+
+      it 'excludes airport ATMs without cash' do
+        no_cash_airport_atm = create(:atm_machine, branch: nil, location_type: 'airport', status: 'active', cash_available: 0)
+        
+        results = AtmMachine.active_with_cash_at_airport
+        expect(results).to include(airport_atm)
+        expect(results).not_to include(no_cash_airport_atm)
+      end
+    end
+
+    describe '.active_with_cash_near_city' do
+      let!(:other_city_branch) { create(:branch, city: 'Cambridge', state: 'MA') }
+      let!(:cambridge_branch_atm) { create(:atm_machine, branch: other_city_branch, status: 'active', cash_available: 4000, city: 'Cambridge') }
+      let!(:cambridge_standalone_atm) { create(:atm_machine, branch: nil, location_type: 'mall', status: 'active', cash_available: 3000, city: 'Cambridge') }
+
+      it 'returns ATMs in the specified city (both branch and standalone)' do
+        results = AtmMachine.active_with_cash_near_city('Cambridge')
+        expect(results).to include(cambridge_branch_atm, cambridge_standalone_atm)
+        expect(results).not_to include(branch_atm) # This is in Boston, not Cambridge
+      end
+
+      it 'returns ATMs at branches whose city matches even if ATM city is different' do
+        # Create an ATM with different city but branch in target city
+        mixed_location_atm = create(:atm_machine, 
+          branch: other_city_branch, 
+          status: 'active', 
+          cash_available: 2000, 
+          city: 'Somerville'  # ATM city different from branch city
+        )
+        
+        results = AtmMachine.active_with_cash_near_city('Cambridge')
+        expect(results).to include(mixed_location_atm)
+      end
+
+      it 'excludes ATMs without cash' do
+        no_cash_cambridge_atm = create(:atm_machine, branch: nil, location_type: 'gas_station', status: 'active', cash_available: 0, city: 'Cambridge')
+        
+        results = AtmMachine.active_with_cash_near_city('Cambridge')
+        expect(results).not_to include(no_cash_cambridge_atm)
+      end
+
+      it 'excludes non-active ATMs' do
+        maintenance_cambridge_atm = create(:atm_machine, branch: nil, location_type: 'hospital', status: 'maintenance', cash_available: 5000, city: 'Cambridge')
+        
+        results = AtmMachine.active_with_cash_near_city('Cambridge')
+        expect(results).not_to include(maintenance_cambridge_atm)
       end
     end
   end

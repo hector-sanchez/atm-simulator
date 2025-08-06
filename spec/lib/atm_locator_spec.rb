@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe SessionLocationService, type: :model do
+RSpec.describe AtmLocator, type: :lib do
   before do
     # Create test data
     @branch = create(:branch, city: 'Anytown', state: 'CA')
@@ -11,9 +11,9 @@ RSpec.describe SessionLocationService, type: :model do
     @no_cash_atm = create(:atm_machine, branch: nil, location_type: 'gas_station', city: 'Anytown', state: 'CA', status: 'active', cash_available: 0)
   end
 
-  describe '.assign_atm_for_session' do
+  describe '.find_nearest_atm' do
     it 'returns a hash with ATM machine, user location, and selection reason' do
-      result = SessionLocationService.assign_atm_for_session
+      result = AtmLocator.find_nearest_atm
 
       expect(result).to have_key(:atm_machine)
       expect(result).to have_key(:user_location)
@@ -27,7 +27,7 @@ RSpec.describe SessionLocationService, type: :model do
     it 'selects only operational ATMs (active status with cash)' do
       # Run multiple times to test randomization
       10.times do
-        result = SessionLocationService.assign_atm_for_session
+        result = AtmLocator.find_nearest_atm
         selected_atm = result[:atm_machine]
 
         expect(selected_atm.status).to eq('active')
@@ -41,7 +41,7 @@ RSpec.describe SessionLocationService, type: :model do
       # Since all our test ATMs are in the same city, they should all be available
       selected_atms = []
       20.times do
-        result = SessionLocationService.assign_atm_for_session
+        result = AtmLocator.find_nearest_atm
         selected_atms << result[:atm_machine]
       end
 
@@ -58,12 +58,12 @@ RSpec.describe SessionLocationService, type: :model do
         atm.update!(status: 'maintenance')
       end
 
-      result = SessionLocationService.assign_atm_for_session
+      result = AtmLocator.find_nearest_atm
       expect(result[:atm_machine]).to eq(other_city_atm)
     end
 
     it 'includes meaningful selection reasons' do
-      result = SessionLocationService.assign_atm_for_session
+      result = AtmLocator.find_nearest_atm
       reason = result[:selection_reason]
 
       if result[:atm_machine].branch.present?
@@ -75,35 +75,35 @@ RSpec.describe SessionLocationService, type: :model do
     end
   end
 
-  describe '.assign_specific_atm_by_location' do
+  describe '.find_atm_by_location_type' do
     it 'returns branch ATM when requested' do
-      atm = SessionLocationService.assign_specific_atm_by_location('branch')
+      atm = AtmLocator.find_atm_by_location_type('branch')
       expect(atm.branch).to be_present
       expect(atm).to eq(@branch_atm)
     end
 
     it 'returns supermarket ATM when requested' do
-      atm = SessionLocationService.assign_specific_atm_by_location('supermarket')
+      atm = AtmLocator.find_atm_by_location_type('supermarket')
       expect(atm.location_type).to eq('supermarket')
       expect(atm).to eq(@supermarket_atm)
     end
 
     it 'returns university ATM when requested' do
-      atm = SessionLocationService.assign_specific_atm_by_location('university')
+      atm = AtmLocator.find_atm_by_location_type('university')
       expect(atm.location_type).to eq('university')
       expect(atm).to eq(@university_atm)
     end
 
     it 'handles case-insensitive location preferences' do
-      atm = SessionLocationService.assign_specific_atm_by_location('SUPERMARKET')
+      atm = AtmLocator.find_atm_by_location_type('SUPERMARKET')
       expect(atm.location_type).to eq('supermarket')
 
-      atm = SessionLocationService.assign_specific_atm_by_location('University')
+      atm = AtmLocator.find_atm_by_location_type('University')
       expect(atm.location_type).to eq('university')
     end
 
     it 'falls back to random selection for unknown preferences' do
-      atm = SessionLocationService.assign_specific_atm_by_location('unknown_location')
+      atm = AtmLocator.find_atm_by_location_type('unknown_location')
       expect([@branch_atm, @supermarket_atm, @university_atm]).to include(atm)
     end
 
@@ -111,14 +111,14 @@ RSpec.describe SessionLocationService, type: :model do
       # Make supermarket ATM non-operational
       @supermarket_atm.update!(status: 'out_of_service')
 
-      atm = SessionLocationService.assign_specific_atm_by_location('supermarket')
+      atm = AtmLocator.find_atm_by_location_type('supermarket')
       expect(atm).to be_nil
     end
   end
 
   describe 'USER_LOCATIONS constant' do
     it 'contains realistic location data' do
-      locations = SessionLocationService::USER_LOCATIONS
+      locations = AtmLocator::USER_LOCATIONS
 
       expect(locations).to be_an(Array)
       expect(locations).not_to be_empty
