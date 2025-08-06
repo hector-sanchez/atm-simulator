@@ -1,6 +1,7 @@
 class Account < ApplicationRecord
   belongs_to :customer
   has_many :cards, dependent: :destroy
+  has_many :transactions, through: :cards
 
   ACCOUNT_TYPES = %w[checking savings].freeze
 
@@ -13,15 +14,12 @@ class Account < ApplicationRecord
     balance >= amount
   end
 
-  # Debit account (withdraw)
-  def debit!(amount)
-    raise ArgumentError, "Insufficient funds" unless sufficient_funds?(amount)
-    update!(balance: balance - amount)
+  def insufficient_funds?(amount)
+    !sufficient_funds?(amount)
   end
 
-  # Credit account (deposit)
-  def credit!(amount)
-    raise ArgumentError, "Amount must be positive" unless amount > 0
+  def update_balance!(amount)
+    # for debit transactions amount will be negative
     update!(balance: balance + amount)
   end
 end

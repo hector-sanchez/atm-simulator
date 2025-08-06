@@ -1,6 +1,7 @@
 class AtmMachine < ApplicationRecord
   # Relationships
   belongs_to :branch, optional: true  # ATM can exist without being at a branch
+  has_many :transactions, dependent: :nullify # Don't delete transactions if ATM is removed
 
   # Enums
   enum :status, {

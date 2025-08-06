@@ -81,51 +81,46 @@ RSpec.describe Account, type: :model do
     end
   end
 
-  describe '#debit!' do
+  describe 'balance updates through transactions' do
     let(:account) { create(:account, balance: 100.00) }
+    let(:card) { create(:card, account: account) }
+    let(:atm_machine) { create(:atm_machine) }
 
-    it 'reduces balance by the specified amount' do
-      account.debit!(25.00)
+    it 'updates balance when debit transaction is approved' do
+      transaction = Transaction.create!(
+        card: card,
+        atm_machine: atm_machine,
+        amount: 25.00,
+        transaction_type: 'debit',
+        source: 'atm'
+      )
+
       expect(account.reload.balance).to eq(75.00)
     end
 
-    it 'raises error when insufficient funds' do
-      expect {
-        account.debit!(150.00)
-      }.to raise_error(ArgumentError, 'Insufficient funds')
-    end
+    it 'does not update balance when debit transaction is denied due to insufficient funds' do
+      transaction = Transaction.create!(
+        card: card,
+        atm_machine: atm_machine,
+        amount: 150.00,
+        transaction_type: 'debit',
+        source: 'atm'
+      )
 
-    it 'does not change balance when transaction fails' do
-      expect {
-        account.debit!(150.00)
-      }.to raise_error(ArgumentError)
       expect(account.reload.balance).to eq(100.00)
+      expect(transaction.reload.denied?).to be true
     end
-  end
 
-  describe '#credit!' do
-    let(:account) { create(:account, balance: 100.00) }
+    it 'updates balance when credit transaction is approved' do
+      transaction = Transaction.create!(
+        card: card,
+        atm_machine: atm_machine,
+        amount: 25.00,
+        transaction_type: 'credit',
+        source: 'atm'
+      )
 
-    it 'increases balance by the specified amount' do
-      account.credit!(25.00)
       expect(account.reload.balance).to eq(125.00)
-    end
-
-    it 'raises error for non-positive amounts' do
-      expect {
-        account.credit!(0)
-      }.to raise_error(ArgumentError, 'Amount must be positive')
-
-      expect {
-        account.credit!(-10.00)
-      }.to raise_error(ArgumentError, 'Amount must be positive')
-    end
-
-    it 'does not change balance when transaction fails' do
-      expect {
-        account.credit!(-10.00)
-      }.to raise_error(ArgumentError)
-      expect(account.reload.balance).to eq(100.00)
     end
   end
 

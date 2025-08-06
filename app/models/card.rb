@@ -2,6 +2,7 @@ require 'bcrypt'
 
 class Card < ApplicationRecord
   belongs_to :account
+  has_many :transactions, dependent: :destroy
 
   # Rails 7+ built-in encryption for sensitive data
   # encrypts :card_number  # Temporarily disabled for testing

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_05_204930) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_06_060726) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -97,7 +97,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_05_204930) do
     t.index ["zipcode"], name: "index_customers_on_zipcode"
   end
 
+  create_table "transactions", force: :cascade do |t|
+    t.bigint "card_id", null: false
+    t.bigint "atm_machine_id"
+    t.decimal "amount", precision: 10, scale: 2, null: false
+    t.string "transaction_type", null: false
+    t.string "source", null: false
+    t.string "status", null: false
+    t.string "reference_number", limit: 20, null: false
+    t.text "description"
+    t.datetime "processed_at"
+    t.decimal "account_balance_after", precision: 10, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["atm_machine_id", "created_at"], name: "index_transactions_on_atm_machine_id_and_created_at"
+    t.index ["atm_machine_id"], name: "index_transactions_on_atm_machine_id"
+    t.index ["card_id", "created_at"], name: "index_transactions_on_card_id_and_created_at"
+    t.index ["card_id"], name: "index_transactions_on_card_id"
+    t.index ["reference_number"], name: "index_transactions_on_reference_number", unique: true
+    t.index ["source"], name: "index_transactions_on_source"
+    t.index ["status", "created_at"], name: "index_transactions_on_status_and_created_at"
+    t.index ["transaction_type"], name: "index_transactions_on_transaction_type"
+  end
+
   add_foreign_key "accounts", "customers"
   add_foreign_key "atm_machines", "branches"
   add_foreign_key "cards", "accounts"
+  add_foreign_key "transactions", "atm_machines"
+  add_foreign_key "transactions", "cards"
 end

@@ -47,5 +47,13 @@ FactoryBot.define do
 
       pin { custom_pin }
     end
+
+    trait :with_low_balance_account do
+      association :account, balance: '50.00'
+    end
+
+    trait :with_high_balance_account do
+      association :account, balance: '5000.00'
+    end
   end
 end
