@@ -163,7 +163,7 @@ RSpec.describe AtmMachine, type: :model do
       it 'returns only active supermarket ATMs with cash' do
         # Create a supermarket ATM with cash for this test
         cash_supermarket_atm = create(:atm_machine, branch: nil, location_type: 'supermarket', status: 'active', cash_available: 2000)
-        
+
         results = AtmMachine.active_with_cash_at_market_or_grocery
         expect(results).to include(cash_supermarket_atm)
         expect(results).not_to include(no_cash_supermarket_atm, university_atm, branch_atm)
@@ -179,7 +179,7 @@ RSpec.describe AtmMachine, type: :model do
 
       it 'excludes university ATMs without cash' do
         no_cash_university_atm = create(:atm_machine, branch: nil, location_type: 'university', status: 'active', cash_available: 0)
-        
+
         results = AtmMachine.active_with_cash_at_university
         expect(results).to include(university_atm)
         expect(results).not_to include(no_cash_university_atm)
@@ -187,7 +187,7 @@ RSpec.describe AtmMachine, type: :model do
 
       it 'excludes non-active university ATMs' do
         maintenance_university_atm = create(:atm_machine, branch: nil, location_type: 'university', status: 'maintenance', cash_available: 5000)
-        
+
         results = AtmMachine.active_with_cash_at_university
         expect(results).to include(university_atm)
         expect(results).not_to include(maintenance_university_atm)
@@ -203,7 +203,7 @@ RSpec.describe AtmMachine, type: :model do
 
       it 'excludes airport ATMs without cash' do
         no_cash_airport_atm = create(:atm_machine, branch: nil, location_type: 'airport', status: 'active', cash_available: 0)
-        
+
         results = AtmMachine.active_with_cash_at_airport
         expect(results).to include(airport_atm)
         expect(results).not_to include(no_cash_airport_atm)
@@ -223,27 +223,27 @@ RSpec.describe AtmMachine, type: :model do
 
       it 'returns ATMs at branches whose city matches even if ATM city is different' do
         # Create an ATM with different city but branch in target city
-        mixed_location_atm = create(:atm_machine, 
-          branch: other_city_branch, 
-          status: 'active', 
-          cash_available: 2000, 
+        mixed_location_atm = create(:atm_machine,
+          branch: other_city_branch,
+          status: 'active',
+          cash_available: 2000,
           city: 'Somerville'  # ATM city different from branch city
         )
-        
+
         results = AtmMachine.active_with_cash_near_city('Cambridge')
         expect(results).to include(mixed_location_atm)
       end
 
       it 'excludes ATMs without cash' do
         no_cash_cambridge_atm = create(:atm_machine, branch: nil, location_type: 'gas_station', status: 'active', cash_available: 0, city: 'Cambridge')
-        
+
         results = AtmMachine.active_with_cash_near_city('Cambridge')
         expect(results).not_to include(no_cash_cambridge_atm)
       end
 
       it 'excludes non-active ATMs' do
         maintenance_cambridge_atm = create(:atm_machine, branch: nil, location_type: 'hospital', status: 'maintenance', cash_available: 5000, city: 'Cambridge')
-        
+
         results = AtmMachine.active_with_cash_near_city('Cambridge')
         expect(results).not_to include(maintenance_cambridge_atm)
       end
