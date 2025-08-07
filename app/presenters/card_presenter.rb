@@ -59,8 +59,6 @@ class CardPresenter
     @card.account.customer
   end
 
-  private
-
   def last_four_digits
     @card.last_four_digits
   end

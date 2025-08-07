@@ -1,0 +1,96 @@
+<%= stylesheet_link_tag 'atm' %>
+
+<div class="atm-container">
+	<div class="atm-screen transactions-full-width">
+		<!-- Full Width Transaction History Panel -->
+		<div class="form-panel full-width-panel">
+			<!-- Header -->
+			<div class="atm-header">
+				<div class="bank-logo">SecureBank ATM</div>
+
+				<h1 class="welcome-title">Transaction History</h1>
+				<p class="welcome-subtitle">
+					<strong><%= @account_presenter.account_type_display %></strong>
+					Account: <%= @account_presenter.formatted_account_number %> • Balance:
+					<%= @account_presenter.formatted_balance %>
+				</p>
+			</div>
+
+			<!-- Transaction Table -->
+			<div class="transaction-history">
+				<% if @transaction_presenters.any? %>
+				<div class="transaction-table-container">
+					<table class="transaction-table">
+						<thead>
+							<tr>
+								<th>Date</th>
+								<th>Type</th>
+								<th>Amount</th>
+								<th>ATM Location</th>
+								<th>Status</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% @transaction_presenters.each do |presenter| %>
+							<tr class="<%= presenter.row_css_class %>">
+								<td class="transaction-date">
+									<div class="date-primary">
+										<%= presenter.formatted_date %>
+									</div>
+									<div class="date-secondary">
+										<%= presenter.formatted_time %>
+									</div>
+								</td>
+								<td class="transaction-type">
+									<span class="<%= presenter.type_badge_css_class %>">
+										<%= presenter.type_icon %>
+										<%= presenter.type_display %>
+									</span>
+									<div class="source-info">
+										<%= presenter.source_display %>
+									</div>
+								</td>
+								<td class="transaction-amount">
+									<span class="amount <%= presenter.amount_css_class %>">
+										<%= presenter.amount_with_sign %>
+									</span>
+								</td>
+								<td class="transaction-location">
+									<div class="location-name">
+										<%= presenter.location_name %>
+									</div>
+									<div class="location-address">
+										<%= presenter.location_address %>
+									</div>
+								</td>
+								<td class="transaction-status">
+									<span class="<%= presenter.status_badge_css_class %>">
+										<%= presenter.status_icon %>
+										<%= presenter.status_display %>
+									</span>
+								</td>
+							</tr>
+							<% end %>
+						</tbody>
+					</table>
+				</div>
+
+				<!-- Pagination -->
+				<div class="pagination-container"><%= paginate @transactions %></div>
+				<% else %>
+				<div class="no-transactions">
+					<div class="no-transactions-icon">📄</div>
+					<h3>No Transaction History</h3>
+					<p>You haven't made any transactions yet.</p>
+				</div>
+				<% end %>
+
+				<!-- Navigation Buttons -->
+				<div class="transaction-actions">
+					<%= link_to atm_path, class: "back-button" do %>
+					<span>⬅️</span> Back to Main Menu <% end %>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

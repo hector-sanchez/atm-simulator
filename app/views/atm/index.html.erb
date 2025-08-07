@@ -39,10 +39,7 @@
 					<h3 class="menu-title">Select Transaction</h3>
 
 					<div class="menu-options">
-						<button
-							class="menu-option"
-							type="button"
-						>
+						<%= link_to transactions_path, class: "menu-option" do %>
 							<span class="option-icon">💰</span>
 							<span class="option-text">
 								<strong>Check Balance</strong>
@@ -50,7 +47,7 @@
 									>View current account balance and recent transactions</small
 								>
 							</span>
-						</button>
+						<% end %>
 
 						<button
 							class="menu-option"
@@ -88,8 +85,10 @@
 				</div>
 
 				<!-- Logout Button -->
-				<%= link_to logout_path, method: :delete, class: "logout-button", data:
-				{ confirm: "Are you sure you want to end your session?" } do %>
+				<%= link_to logout_path, class: "logout-button", data: {
+					"turbo-method": "delete",
+					confirm: "Are you sure you want to end your session?"
+				} do %>
 				<span>🚪</span> End Session <% end %>
 			</div>
 		</div>
