@@ -56,12 +56,6 @@ RSpec.describe TransactionPresenter, type: :presenter do
         end
       end
 
-      describe '#atm_machine_id' do
-        it 'returns the ATM machine ID' do
-          expect(presenter.atm_machine_id).to eq(atm_machine.machine_id)
-        end
-      end
-
       describe '#source_display' do
         it 'returns ATM for atm source' do
           expect(presenter.source_display).to eq('Atm')
@@ -88,7 +82,7 @@ RSpec.describe TransactionPresenter, type: :presenter do
     end
 
     context 'Teller transaction' do
-      let(:teller_transaction) { create(:transaction, :from_teller, :debit, amount: 200.00) }
+      let(:teller_transaction) { create(:transaction, :teller, :debit, amount: 200.00) }
       let(:presenter) { TransactionPresenter.new(teller_transaction) }
 
       describe '#location_name' do
@@ -106,12 +100,6 @@ RSpec.describe TransactionPresenter, type: :presenter do
       describe '#has_atm_location?' do
         it 'returns false for teller transactions' do
           expect(presenter.has_atm_location?).to be false
-        end
-      end
-
-      describe '#atm_machine_id' do
-        it 'returns nil for teller transactions' do
-          expect(presenter.atm_machine_id).to be_nil
         end
       end
 

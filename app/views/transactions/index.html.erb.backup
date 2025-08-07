@@ -1,0 +1,101 @@
+<div class="page-header">
+  <h1 class="page-title">Transaction History</h1>
+  <p class="page-subtitle">View your recent account activity and transaction details</p>
+
+  <div class="account-info">
+    <div class="account-details">
+      <strong><%= @account_presenter.account_type_display %></strong> Account: <%= @account_presenter.formatted_account_number %>
+    </div>
+    <div class="account-balance">
+      Current Balance: <%= @account_presenter.formatted_balance %>
+    </div>
+  </div>
+</div>
+
+<div class="banking-card">
+  <div class="card-header">
+    <h2 class="card-title">Recent Transactions</h2>
+  </div>
+
+  <div class="card-body">
+    <% if @transaction_presenters.any? %>
+      <div class="transaction-table-container">
+        <table class="transaction-table">
+          <thead>
+            <tr>
+              <th>Date & Time</th>
+              <th>Description</th>
+              <th>Type</th>
+              <th>Location</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% @transaction_presenters.each do |presenter| %>
+              <tr>
+                <td>
+                  <div class="transaction-datetime">
+                    <div><%= presenter.formatted_date %></div>
+                    <div><%= presenter.formatted_time %></div>
+                  </div>
+                </td>
+
+                <td>
+                  <div class="transaction-description">
+                    <%= presenter.transaction_type_display %>
+                    <% if presenter.has_atm_location? %>
+                      <span class="atm-machine-id">(ATM <%= presenter.atm_machine_id %>)</span>
+                    <% end %>
+                  </div>
+                </td>
+
+                <td>
+                  <span class="transaction-type <%= presenter.transaction_type.downcase %>">
+                    <%= presenter.transaction_type_display %>
+                  </span>
+                </td>
+
+                <td>
+                  <% if presenter.has_atm_location? %>
+                    <div class="transaction-location">
+                      <strong><%= presenter.location_name %></strong><br>
+                      <%= presenter.location_address %>
+                    </div>
+                  <% else %>
+                    <span class="transaction-source">
+                      🏦 <%= presenter.source_display %>
+                    </span>
+                  <% end %>
+                </td>
+
+                <td>
+                  <span class="<%= presenter.status_badge_css_class %>">
+                    <%= presenter.status_icon %> <%= presenter.status_display %>
+                  </span>
+                </td>
+
+                <td>
+                  <span class="transaction-amount <%= presenter.transaction.amount.positive? ? 'positive' : 'negative' %>">
+                    <%= presenter.amount_with_sign %>
+                  </span>
+                </td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-wrapper">
+        <%= paginate @transactions, theme: 'banking' %>
+      </div>
+    <% else %>
+      <div class="empty-state">
+        <div class="empty-state-icon">�</div>
+        <h3 class="empty-state-title">No Transactions Found</h3>
+        <p class="empty-state-description">
+          You haven't made any transactions yet. When you do, they'll appear here.
+        </p>
+      </div>
+    <% end %>
+  </div>
+</div>

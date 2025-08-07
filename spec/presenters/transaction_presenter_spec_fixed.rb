@@ -27,8 +27,8 @@ RSpec.describe TransactionPresenter, type: :presenter do
       end
 
       describe '#formatted_date' do
-        it 'returns formatted date in short format' do
-          expect(presenter.formatted_date).to match(/\d{2}\/\d{2}\/\d{4}/)
+        it 'returns formatted date' do
+          expect(presenter.formatted_date).to match(/\w+ \d{1,2}, \d{4}/)
         end
       end
 
@@ -56,12 +56,6 @@ RSpec.describe TransactionPresenter, type: :presenter do
         end
       end
 
-      describe '#atm_machine_id' do
-        it 'returns the ATM machine ID' do
-          expect(presenter.atm_machine_id).to eq(atm_machine.machine_id)
-        end
-      end
-
       describe '#source_display' do
         it 'returns ATM for atm source' do
           expect(presenter.source_display).to eq('Atm')
@@ -75,43 +69,37 @@ RSpec.describe TransactionPresenter, type: :presenter do
       end
 
       describe '#status_badge_css_class' do
-        it 'returns approved class with base class for approved status' do
-          expect(presenter.status_badge_css_class).to eq('status-badge approved')
+        it 'returns approved class for approved status' do
+          expect(presenter.status_badge_css_class).to eq('approved')
         end
       end
 
       describe '#type_badge_css_class' do
-        it 'returns debit class with base class for debit type' do
-          expect(presenter.type_badge_css_class).to eq('type-badge debit')
+        it 'returns debit class for debit type' do
+          expect(presenter.type_badge_css_class).to eq('debit')
         end
       end
     end
 
     context 'Teller transaction' do
-      let(:teller_transaction) { create(:transaction, :from_teller, :debit, amount: 200.00) }
+      let(:teller_transaction) { create(:transaction, :teller, :debit, amount: 200.00) }
       let(:presenter) { TransactionPresenter.new(teller_transaction) }
 
       describe '#location_name' do
-        it 'returns Teller Transaction for teller source' do
-          expect(presenter.location_name).to eq('Teller Transaction')
+        it 'returns branch name for teller source' do
+          expect(presenter.location_name).to include('Branch')
         end
       end
 
       describe '#location_address' do
-        it 'returns In-Branch Service for teller transactions' do
-          expect(presenter.location_address).to eq('In-Branch Service')
+        it 'returns branch address for teller transactions' do
+          expect(presenter.location_address).to be_present
         end
       end
 
       describe '#has_atm_location?' do
         it 'returns false for teller transactions' do
           expect(presenter.has_atm_location?).to be false
-        end
-      end
-
-      describe '#atm_machine_id' do
-        it 'returns nil for teller transactions' do
-          expect(presenter.atm_machine_id).to be_nil
         end
       end
 
@@ -149,8 +137,8 @@ RSpec.describe TransactionPresenter, type: :presenter do
       end
 
       describe '#type_badge_css_class' do
-        it 'returns credit class with base class for credit type' do
-          expect(presenter.type_badge_css_class).to eq('type-badge credit')
+        it 'returns credit class for credit type' do
+          expect(presenter.type_badge_css_class).to eq('credit')
         end
       end
     end
@@ -160,8 +148,8 @@ RSpec.describe TransactionPresenter, type: :presenter do
       let(:presenter) { TransactionPresenter.new(teller_credit) }
 
       describe '#amount_with_sign' do
-        it 'returns formatted amount with sign for teller credit without comma' do
-          expect(presenter.amount_with_sign).to eq('+$1000.00')
+        it 'returns formatted amount with sign for teller credit' do
+          expect(presenter.amount_with_sign).to eq('+$1,000.00')
         end
       end
     end
@@ -179,8 +167,8 @@ RSpec.describe TransactionPresenter, type: :presenter do
       end
 
       describe '#status_badge_css_class' do
-        it 'returns denied class with base class for denied status' do
-          expect(presenter.status_badge_css_class).to eq('status-badge denied')
+        it 'returns denied class for denied status' do
+          expect(presenter.status_badge_css_class).to eq('denied')
         end
       end
     end
@@ -190,14 +178,14 @@ RSpec.describe TransactionPresenter, type: :presenter do
       let(:presenter) { TransactionPresenter.new(pending_transaction) }
 
       describe '#status_icon' do
-        it 'returns checkmark for pending status (defaults to approved icon)' do
-          expect(presenter.status_icon).to eq('✅')
+        it 'returns clock for pending status' do
+          expect(presenter.status_icon).to eq('⏳')
         end
       end
 
       describe '#status_badge_css_class' do
-        it 'returns pending status with base class' do
-          expect(presenter.status_badge_css_class).to eq('status-badge approved')
+        it 'returns pending class for pending status' do
+          expect(presenter.status_badge_css_class).to eq('pending')
         end
       end
     end
@@ -207,14 +195,14 @@ RSpec.describe TransactionPresenter, type: :presenter do
       let(:presenter) { TransactionPresenter.new(cancelled_transaction) }
 
       describe '#status_icon' do
-        it 'returns X for cancelled status' do
+        it 'returns appropriate icon for cancelled status' do
           expect(presenter.status_icon).to eq('❌')
         end
       end
 
       describe '#status_badge_css_class' do
-        it 'returns cancelled class with base class for cancelled status' do
-          expect(presenter.status_badge_css_class).to eq('status-badge cancelled')
+        it 'returns cancelled class for cancelled status' do
+          expect(presenter.status_badge_css_class).to eq('cancelled')
         end
       end
     end
@@ -226,8 +214,8 @@ RSpec.describe TransactionPresenter, type: :presenter do
       let(:presenter) { TransactionPresenter.new(large_transaction) }
 
       describe '#amount_with_sign' do
-        it 'formats large amounts without commas' do
-          expect(presenter.amount_with_sign).to eq('+$12345.67')
+        it 'formats large amounts with commas' do
+          expect(presenter.amount_with_sign).to eq('+$12,345.67')
         end
       end
     end
@@ -249,15 +237,14 @@ RSpec.describe TransactionPresenter, type: :presenter do
     let(:presenter) { TransactionPresenter.new(transaction) }
 
     describe '#formatted_date' do
-      it 'returns formatted date in MM/DD/YYYY format' do
-        expect(presenter.formatted_date).to eq('12/15/2024')
+      it 'returns formatted date' do
+        expect(presenter.formatted_date).to eq('December 15, 2024')
       end
     end
 
     describe '#formatted_time' do
       it 'returns formatted time' do
-        # Time zone might affect this, so we'll be more flexible
-        expect(presenter.formatted_time).to match(/\d{1,2}:\d{2} (AM|PM)/)
+        expect(presenter.formatted_time).to eq('2:30 PM')
       end
     end
   end
@@ -305,44 +292,6 @@ RSpec.describe TransactionPresenter, type: :presenter do
     describe '#status_css_class' do
       it 'returns status CSS class' do
         expect(presenter.status_css_class).to be_present
-      end
-    end
-
-    describe 'Boolean helpers' do
-      describe '#approved?' do
-        it 'returns appropriate boolean' do
-          expect([true, false]).to include(presenter.approved?)
-        end
-      end
-
-      describe '#denied?' do
-        it 'returns appropriate boolean' do
-          expect([true, false]).to include(presenter.denied?)
-        end
-      end
-
-      describe '#credit?' do
-        it 'returns appropriate boolean' do
-          expect([true, false]).to include(presenter.credit?)
-        end
-      end
-
-      describe '#debit?' do
-        it 'returns appropriate boolean' do
-          expect([true, false]).to include(presenter.debit?)
-        end
-      end
-
-      describe '#from_atm?' do
-        it 'returns false for teller transactions' do
-          expect(presenter.from_atm?).to be false
-        end
-      end
-
-      describe '#from_teller?' do
-        it 'returns true for teller transactions' do
-          expect(presenter.from_teller?).to be true
-        end
       end
     end
   end

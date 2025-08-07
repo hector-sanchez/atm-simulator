@@ -1,5 +1,5 @@
 class SessionsController < ApplicationController
-  layout 'atm'
+  layout 'atm_kiosk'
 
   # GET /login
   def new

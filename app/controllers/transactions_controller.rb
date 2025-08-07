@@ -1,5 +1,5 @@
 class TransactionsController < ApplicationController
-  layout 'atm'
+  layout 'banking'
   before_action :require_authentication
   before_action :assign_atm_location
 

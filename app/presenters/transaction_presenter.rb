@@ -4,11 +4,15 @@ class TransactionPresenter
   end
 
   # Delegate basic attributes to the transaction
-  delegate :id, :amount, :transaction_type, :source, :status, :created_at, :description, :reference_number, to: :@transaction
+  delegate :id, :amount, :transaction_type, :source, :status, :created_at, :description, :reference_number, :transaction_type_display, to: :@transaction
 
   # Access to the underlying transaction object
   def transaction
     @transaction
+  end
+
+  def amount_positive?
+    amount.positive?
   end
 
   # Date formatting methods
@@ -74,6 +78,10 @@ class TransactionPresenter
 
   def has_atm_location?
     @transaction.atm_machine.present?
+  end
+
+  def atm_machine_id
+    @transaction.atm_machine&.machine_id
   end
 
   # Status display methods

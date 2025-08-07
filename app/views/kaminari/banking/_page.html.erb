@@ -1,0 +1,5 @@
+<% if page.current? %>
+  <span class="pagination-link current"><%= page %></span>
+<% else %>
+  <%= link_to page, url, {:remote => remote, :rel => page.rel, :class=> 'pagination-link'} %>
+<% end %>

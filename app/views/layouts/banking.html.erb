@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>SecureBank Online Banking</title>
+		<meta
+			name="viewport"
+			content="width=device-width,initial-scale=1"
+		/>
+		<%= csrf_meta_tags %> <%= csp_meta_tag %>
+    <%= stylesheet_link_tag"application", "data-turbo-track": "reload" %>
+    <%= stylesheet_link_tag"banking", "data-turbo-track": "reload" %> <%= javascript_importmap_tags %>
+	</head>
+
+	<body class="banking-app">
+		<header class="banking-header">
+			<div class="container">
+				<div class="header-brand">
+					<h1 class="bank-name">SecureBank</h1>
+					<span class="app-subtitle">Online Banking</span>
+				</div>
+				<nav class="header-nav">
+					<%= link_to "ATM Interface", atm_path, class: "nav-link" %>
+				</nav>
+			</div>
+		</header>
+
+		<main class="banking-main">
+			<div class="container">
+				<% if notice %>
+				<div
+					class="alert alert-success"
+					role="alert"
+				>
+					<%= notice %>
+				</div>
+				<% end %> <% if alert %>
+				<div
+					class="alert alert-danger"
+					role="alert"
+				>
+					<%= alert %>
+				</div>
+				<% end %> <%= yield %>
+			</div>
+		</main>
+
+		<footer class="banking-footer">
+			<div class="container">
+				<p>
+					&copy; <%= Date.current.year %> SecureBank. All rights reserved. |
+					Member FDIC | Equal Housing Lender
+				</p>
+			</div>
+		</footer>
+	</body>
+</html>

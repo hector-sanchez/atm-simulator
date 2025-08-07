@@ -28,5 +28,9 @@
 
 # Ignore .keep files
 *.keep
+
+# Ignore compressed files
+*.gz
+
 # Add public/assets/ to .gitignore if not already there
 /public/assets/
