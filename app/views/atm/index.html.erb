@@ -18,7 +18,7 @@
 					<div class="location-details">
 						<%= @current_atm.full_address %>
 						<% if @selection_reason %>
-							<small class="selection-reason">(<%= @selection_reason %>)</small>
+							<div class="selection-reason"><%= @selection_reason %></div>
 						<% end %>
 					</div>
 				</div>
@@ -68,17 +68,6 @@
 							<span class="option-text">
 								<strong>Make a deposit</strong>
 								<small>Put money in your account</small>
-							</span>
-						</button>
-
-						<button
-							class="menu-option"
-							type="button"
-						>
-							<span class="option-icon">📄</span>
-							<span class="option-text">
-								<strong>Mini Statement</strong>
-								<small>View recent transactions</small>
 							</span>
 						</button>
 					</div>

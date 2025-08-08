@@ -12,7 +12,20 @@ class TransactionPresenter
   end
 
   def amount_positive?
-    amount.positive?
+    # Credits are positive (money coming in), debits are negative (money going out)
+    # Note: All amounts are stored as positive values in the database,
+    # the transaction_type determines the display sign
+    @transaction.transaction_type == 'credit'
+  end
+
+  def amount_negative?
+    # Debits are negative (money going out)
+    @transaction.transaction_type == 'debit'
+  end
+
+  # CSS class for amount styling (positive = green, negative = red)
+  def amount_color_class
+    amount_positive? ? 'positive' : 'negative'
   end
 
   # Date formatting methods
