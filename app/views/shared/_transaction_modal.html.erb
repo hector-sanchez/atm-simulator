@@ -1,0 +1,82 @@
+<div id="<%= transaction_type %>Modal" class="modal-overlay" data-controller="transaction-modal" data-transaction-modal-transaction-type-value="<%= transaction_type %>">
+	<div class="modal-dialog">
+		<div class="modal-header">
+			<h2 class="modal-title">
+				<%= transaction_type == 'debit' ? 'Withdraw Cash' : 'Make Deposit' %>
+			</h2>
+			<button type="button" class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">&times;</button>
+		</div>
+		
+		<div class="modal-body">
+			<form action="/transactions" method="post" data-transaction-modal-target="form">
+				<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
+				<input type="hidden" name="transaction[transaction_type]" value="<%= transaction_type %>" />
+				
+				<!-- Account Information Summary -->
+				<div class="account-info-summary">
+					<h3>Account Information</h3>
+					<p><strong>Account:</strong> <%= account_presenter.formatted_account_number %></p>
+					<div class="current-balance">
+						<p><strong>Current Balance:</strong> <span class="balance-amount"><%= account_presenter.formatted_balance %></span></p>
+					</div>
+				</div>
+
+				<!-- Amount Selection -->
+				<div class="amount-selection">
+					<h3>Select Amount</h3>
+					
+					<!-- Quick Amount Buttons -->
+					<div class="quick-amounts">
+						<% if transaction_type == 'debit' %>
+							<button type="button" class="quick-amount-btn" data-amount="20" data-action="click->transaction-modal#selectQuickAmount">$20</button>
+							<button type="button" class="quick-amount-btn" data-amount="40" data-action="click->transaction-modal#selectQuickAmount">$40</button>
+							<button type="button" class="quick-amount-btn" data-amount="60" data-action="click->transaction-modal#selectQuickAmount">$60</button>
+							<button type="button" class="quick-amount-btn" data-amount="80" data-action="click->transaction-modal#selectQuickAmount">$80</button>
+							<button type="button" class="quick-amount-btn" data-amount="100" data-action="click->transaction-modal#selectQuickAmount">$100</button>
+							<button type="button" class="quick-amount-btn" data-amount="200" data-action="click->transaction-modal#selectQuickAmount">$200</button>
+						<% else %>
+							<button type="button" class="quick-amount-btn" data-amount="50" data-action="click->transaction-modal#selectQuickAmount">$50</button>
+							<button type="button" class="quick-amount-btn" data-amount="100" data-action="click->transaction-modal#selectQuickAmount">$100</button>
+							<button type="button" class="quick-amount-btn" data-amount="200" data-action="click->transaction-modal#selectQuickAmount">$200</button>
+							<button type="button" class="quick-amount-btn" data-amount="300" data-action="click->transaction-modal#selectQuickAmount">$300</button>
+							<button type="button" class="quick-amount-btn" data-amount="500" data-action="click->transaction-modal#selectQuickAmount">$500</button>
+							<button type="button" class="quick-amount-btn" data-amount="1000" data-action="click->transaction-modal#selectQuickAmount">$1000</button>
+						<% end %>
+					</div>
+					
+					<!-- Custom Amount Input -->
+					<div class="custom-amount">
+						<label class="amount-label" for="amount_<%= transaction_type %>">Or enter custom amount:</label>
+						<div class="amount-input-group">
+							<span class="currency-symbol">$</span>
+							<input 
+								type="number" 
+								id="amount_<%= transaction_type %>"
+								name="transaction[amount]" 
+								min="0.01" 
+								step="0.01" 
+								placeholder="0.00"
+								class="form-input amount-input"
+								data-transaction-modal-target="amountInput"
+								data-action="input->transaction-modal#clearSelection"
+								required
+							/>
+						</div>
+						<p class="amount-note">
+							<%= transaction_type == 'debit' ? 'Enter the amount you want to withdraw' : 'Enter the amount you want to deposit' %>
+						</p>
+					</div>
+				</div>
+				
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('active')">
+						Cancel
+					</button>
+					<button type="submit" class="btn btn-primary" data-transaction-modal-target="submitButton" data-action="click->transaction-modal#submit">
+						<%= transaction_type == 'debit' ? 'Withdraw' : 'Deposit' %>
+					</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

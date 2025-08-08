@@ -13,8 +13,8 @@ Rails.application.routes.draw do
   # ATM interface (to be created)
   get "atm" => "atm#index", as: :atm
 
-  # Transaction history
-  get "transactions" => "transactions#index", as: :transactions
+  # Transaction operations and history
+  resources :transactions, only: [:index, :create]
 
   # Defines the root path route ("/") - ATM entry point
   root "sessions#new"

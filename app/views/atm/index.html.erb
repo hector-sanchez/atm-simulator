@@ -23,6 +23,7 @@
 					</div>
 				</div>
 
+				<p>&nbsp;</p>
 				<h1 class="welcome-title">
 					Welcome, <%= @card_presenter.customer_first_name %>
 				</h1>
@@ -38,20 +39,20 @@
 				<div class="menu-section">
 					<h3 class="menu-title">Select Transaction</h3>
 
-					<div class="menu-options">
+					<div class="menu-options" data-controller="modal-opener">
 						<%= link_to transactions_path, class: "menu-option" do %>
 							<span class="option-icon">💰</span>
 							<span class="option-text">
 								<strong>Check Balance</strong>
-								<small
-									>View current account balance and recent transactions</small
-								>
+								<small>View current account balance and recent transactions</small>
 							</span>
 						<% end %>
 
 						<button
 							class="menu-option"
 							type="button"
+							data-action="click->modal-opener#openModal"
+							data-modal-id="debitModal"
 						>
 							<span class="option-icon">💳</span>
 							<span class="option-text">
@@ -63,6 +64,8 @@
 						<button
 							class="menu-option"
 							type="button"
+							data-action="click->modal-opener#openModal"
+							data-modal-id="creditModal"
 						>
 							<span class="option-icon">💵</span>
 							<span class="option-text">
@@ -85,3 +88,34 @@
 		<%= render 'multi_card_panel' %>
 	</div>
 </div>
+
+<!-- Transaction Modals -->
+<%= render 'shared/transaction_modal',
+    transaction_type: 'debit',
+    account_presenter: @account_presenter %>
+
+<%= render 'shared/transaction_modal',
+    transaction_type: 'credit',
+    account_presenter: @account_presenter %>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+    console.log('testModal element:', document.getElementById('testModal'));
+    console.log('debitModal element:', document.getElementById('debitModal'));
+    console.log('creditModal element:', document.getElementById('creditModal'));
+
+    // Check all elements with modal-related classes or IDs
+    console.log('All modal-overlay elements:', document.querySelectorAll('.modal-overlay'));
+    console.log('All elements with IDs containing "Modal":', document.querySelectorAll('[id*="Modal"]'));
+
+    // Check if any div elements contain transaction-related content
+    const allDivs = document.querySelectorAll('div');
+    let transactionDivs = [];
+    allDivs.forEach(div => {
+      if (div.innerHTML && (div.innerHTML.includes('Withdraw') || div.innerHTML.includes('Deposit'))) {
+        transactionDivs.push(div);
+      }
+    });
+    console.log('Divs with transaction content:', transactionDivs);
+  });
+</script>
