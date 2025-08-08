@@ -41,24 +41,28 @@
 					</div>
 				</div>
 
-        <div style="margin-top:50px;">
-          <h1 class="welcome-title">
-            <%= @card_presenter.cardholder_name %>
-          </h1>
-          <p class="welcome-subtitle">
-            <strong><%= @account_presenter.account_type_display %></strong>
-            Account: <%= @account_presenter.formatted_account_number %> • Balance:
-            <%= @account_presenter.formatted_balance %>
-          </p>
+        <div>
+          <div class="section-header">
+            <h1 class="section-title">
+              <%= @card_presenter.cardholder_name %>
+            </h1>
+            <p class="section-subtitle">
+              <strong><%= @account_presenter.account_type_display %></strong>
+              Account: <%= @account_presenter.formatted_account_number %> • Balance:
+              <%= @account_presenter.formatted_balance %>
+            </p>
+          </div>
         </div>
 			</div>
 
 			<div class="atm-menu">
-        <div class="transactions-sections">
+        <div class="transactions-section">
           <% if @transaction_presenters.any? %>
-            <h3 class="welcome-title">
-              Recent Transactions
-            </h3>
+            <div class="section-header">
+              <h2 class="section-title">
+                Recent Transactions
+              </h2>
+            </div>
             <div class="transaction-table-containers">
               <table class="transaction-table">
                 <thead>
@@ -94,7 +98,7 @@
                       </td>
 
                       <td>
-                        <span class="transaction-type <%= presenter.transaction_type.downcase %>">
+                        <span class="type-badge <%= presenter.transaction_type.downcase %>">
                           <%= presenter.transaction_type_display %>
                         </span>
                       </td>

@@ -986,6 +986,43 @@ body {
 	width: 100%;
 }
 
+/* Section Headers */
+
+.section-title {
+	font-size: 32px;
+	font-weight: 700;
+	color: #2d3436;
+	margin-bottom: 8px;
+	letter-spacing: -0.5px;
+	line-height: 1.2;
+}
+
+.section-subtitle {
+	font-size: 16px;
+	color: #636e72;
+	font-weight: 500;
+	line-height: 1.4;
+}
+
+.transactions-section .section-title {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	font-size: 18px;
+	color: #2d3436;
+	margin-bottom: 6px;
+	text-transform: uppercase;
+	letter-spacing: 1px;
+	padding-left: 10px;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+.transactions-section .section-subtitle {
+	font-size: 14px;
+	color: #74b9ff;
+}
+
 /* Full-width transactions layout */
 .atm-screen.transactions-full-width {
 	grid-template-columns: 1fr; /* Single column for full width */
@@ -1076,10 +1113,22 @@ body {
 	border: 1px solid #00875a;
 }
 
+.type-badge.credit::before {
+	content: "+";
+	margin-right: 4px;
+	font-weight: 700;
+}
+
 .type-badge.debit {
 	background: #fff3cd;
 	color: #856404; /* Darker yellow/brown for better visibility */
 	border: 1px solid #856404;
+}
+
+.type-badge.debit::before {
+	content: "−";
+	margin-right: 4px;
+	font-weight: 700;
 }
 
 .source-info {
@@ -1167,6 +1216,38 @@ body {
 
 .no-transactions p {
 	font-size: 14px;
+}
+
+/* Empty State Styling */
+.empty-state {
+	text-align: center;
+	padding: 80px 20px;
+	color: #636e72;
+	background: #f8f9fa;
+	border-radius: 16px;
+	margin: 20px 0;
+}
+
+.empty-state-icon {
+	font-size: 64px;
+	margin-bottom: 24px;
+	display: block;
+}
+
+.empty-state-title {
+	font-size: 24px;
+	font-weight: 700;
+	color: #2d3436;
+	margin-bottom: 12px;
+	letter-spacing: -0.3px;
+}
+
+.empty-state-description {
+	font-size: 16px;
+	color: #636e72;
+	line-height: 1.5;
+	max-width: 400px;
+	margin: 0 auto;
 }
 
 .transaction-actions {
