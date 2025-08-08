@@ -1,8 +1,8 @@
 <%= stylesheet_link_tag 'atm' %>
 
 <div class="atm-container">
-	<div class="atm-screens">
-		<!-- Left Panel - Menu -->
+	<div class="atm-screen transactions-full-width">
+		<!-- Header Section -->
 		<div class="form-panel">
 			<!-- Header -->
 			<div class="atm-header">
@@ -10,22 +10,8 @@
 
 				<!-- Header Controls Row -->
 				<div class="header-controls-row">
-					<!-- ATM Location Information -->
-					<div class="atm-location-info atm-location-info-flex">
-						<div class="location-main">
-							<span class="location-icon">📍</span>
-							<span class="location-text"><%= @current_atm.location_name %></span>
-							<span class="atm-id">ID: <%= @current_atm.machine_id %></span>
-						</div>
-						<div class="location-details">
-							<%= @current_atm.full_address %>
-							<% if @selection_reason %>
-								<div class="selection-reason"><%= @selection_reason %></div>
-							<% end %>
-						</div>
-					</div>
+					<%= render 'shared/atm_location_info', css_class: 'atm-location-info-flex' %>
 
-					<!-- Action Buttons -->
 					<div class="header-action-buttons">
 						<!-- End Session Button -->
 						<%= link_to logout_path, class: "logout-button", data: {
@@ -55,7 +41,8 @@
         </div>
 			</div>
 
-			<div class="atm-menu">
+			<!-- Full Width Transactions Panel -->
+			<div class="full-width-panel">
         <div class="transactions-section">
           <% if @transaction_presenters.any? %>
             <div class="section-header">
@@ -144,4 +131,3 @@
 		</div>
 	</div>
 </div>
-

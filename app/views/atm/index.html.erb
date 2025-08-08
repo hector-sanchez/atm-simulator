@@ -8,20 +8,7 @@
 			<div class="atm-header">
 				<div class="bank-logo">SecureBank ATM</div>
 
-				<!-- ATM Location Information -->
-				<div class="atm-location-info">
-					<div class="location-main">
-						<span class="location-icon">📍</span>
-						<span class="location-text"><%= @current_atm.location_name %></span>
-						<span class="atm-id">ID: <%= @current_atm.machine_id %></span>
-					</div>
-					<div class="location-details">
-						<%= @current_atm.full_address %>
-						<% if @selection_reason %>
-							<div class="selection-reason"><%= @selection_reason %></div>
-						<% end %>
-					</div>
-				</div>
+				<%= render 'shared/atm_location_info' %>
 
 				<p>&nbsp;</p>
 				<h1 class="welcome-title">
@@ -97,25 +84,3 @@
 <%= render 'shared/transaction_modal',
     transaction_type: 'credit',
     account_presenter: @account_presenter %>
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    console.log('DOM loaded');
-    console.log('testModal element:', document.getElementById('testModal'));
-    console.log('debitModal element:', document.getElementById('debitModal'));
-    console.log('creditModal element:', document.getElementById('creditModal'));
-
-    // Check all elements with modal-related classes or IDs
-    console.log('All modal-overlay elements:', document.querySelectorAll('.modal-overlay'));
-    console.log('All elements with IDs containing "Modal":', document.querySelectorAll('[id*="Modal"]'));
-
-    // Check if any div elements contain transaction-related content
-    const allDivs = document.querySelectorAll('div');
-    let transactionDivs = [];
-    allDivs.forEach(div => {
-      if (div.innerHTML && (div.innerHTML.includes('Withdraw') || div.innerHTML.includes('Deposit'))) {
-        transactionDivs.push(div);
-      }
-    });
-    console.log('Divs with transaction content:', transactionDivs);
-  });
-</script>

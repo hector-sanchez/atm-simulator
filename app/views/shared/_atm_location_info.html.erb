@@ -1,0 +1,13 @@
+<!-- ATM Location Information -->
+<div class="atm-location-info <%= local_assigns[:css_class] %>">
+	<div class="location-main">
+		<span class="location-icon">📍</span>
+		<span class="location-text"><%= @current_atm.location_name %></span>
+		<span class="atm-id">ID: <%= @current_atm.machine_id %></span>
+	</div>
+	<div class="location-details">
+		<%= @current_atm.full_address %> <% if @selection_reason %>
+		<div class="selection-reason"><%= @selection_reason %></div>
+		<% end %>
+	</div>
+</div>

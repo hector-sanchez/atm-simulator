@@ -6,12 +6,12 @@
 			</h2>
 			<button type="button" class="modal-close" onclick="this.closest('.modal-overlay').classList.remove('active')">&times;</button>
 		</div>
-		
+
 		<div class="modal-body">
 			<form action="/transactions" method="post" data-transaction-modal-target="form">
 				<input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>" />
 				<input type="hidden" name="transaction[transaction_type]" value="<%= transaction_type %>" />
-				
+
 				<!-- Account Information Summary -->
 				<div class="account-info-summary">
 					<h3>Account Information</h3>
@@ -24,7 +24,7 @@
 				<!-- Amount Selection -->
 				<div class="amount-selection">
 					<h3>Select Amount</h3>
-					
+
 					<!-- Quick Amount Buttons -->
 					<div class="quick-amounts">
 						<% if transaction_type == 'debit' %>
@@ -43,18 +43,18 @@
 							<button type="button" class="quick-amount-btn" data-amount="1000" data-action="click->transaction-modal#selectQuickAmount">$1000</button>
 						<% end %>
 					</div>
-					
+
 					<!-- Custom Amount Input -->
 					<div class="custom-amount">
 						<label class="amount-label" for="amount_<%= transaction_type %>">Or enter custom amount:</label>
 						<div class="amount-input-group">
 							<span class="currency-symbol">$</span>
-							<input 
-								type="number" 
+							<input
+								type="number"
 								id="amount_<%= transaction_type %>"
-								name="transaction[amount]" 
-								min="0.01" 
-								step="0.01" 
+								name="transaction[amount]"
+								min="0.01"
+								step="0.01"
 								placeholder="0.00"
 								class="form-input amount-input"
 								data-transaction-modal-target="amountInput"
@@ -67,7 +67,7 @@
 						</p>
 					</div>
 				</div>
-				
+
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" onclick="this.closest('.modal-overlay').classList.remove('active')">
 						Cancel
