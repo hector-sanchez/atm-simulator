@@ -172,7 +172,8 @@ bundle exec rspec --format documentation
 - [ ] **Advanced Security**: Biometric authentication options
 - [ ] **Multi-language Support**: Internationalization (i18n)
 - [ ] **Admin Dashboard**: ATM management and monitoring tools
-- [ ] **API Integration**: Third-party banking system connectivity
+- [ ] **Error Reporting**: Better on-screen error rendering
+- [ ] **Modal Confirmations**: Right now the confirmations show on browser's dialog; we need to change that
 
 ## 🤝 Contributing
 
